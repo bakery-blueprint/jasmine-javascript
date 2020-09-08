@@ -21,7 +21,8 @@ typeof [1,2,3]              // object
 ```  
 
 
-- 자바스크립트는 동적 타입 언어로, 변수의 타입 지정없이 값이 할당되는 과정에서 자동으로 변수의 타입이 결정됨. 즉, 변수는 고정된 타입이 없며, 같은 변수에 여러 타입의 값을 자유롭게 할당할 수 있음  
+- 자바스크립트는 동적 타입 언어로, 변수의 타입 지정없이 값이 할당되는 과정에서 자동으로 변수의 타입이 결정됨. 
+- 즉, 변수는 고정된 타입이 없며, 같은 변수에 여러 타입의 값을 자유롭게 할당할 수 있음  
 
 ```javascript
     var str  = 'Hello';
@@ -41,9 +42,9 @@ typeof [1,2,3]              // object
 
     ```javascript 
     var a;
-    typeof a    // undefined
-    typeof b    // undefined
-    if (typeof b != "undefined") {...}    // 안전가드, 안전하게 존재 여부 체크
+    typeof a                                // undefined
+    typeof b                                // undefined
+    if (typeof b != "undefined") {...}      // 안전가드, 안전하게 존재 여부 체크
     ```
     b 처럼 declared 되지 않은 것도 typeof를 쓰면 "undefined" 결과가 나온다 => undefined, undeclared 둘다 undefined 로 체크할 수 있음 (안전가드)
 
@@ -73,38 +74,50 @@ function() {}                       // 함수 리터럴
 
 
 ```javascript
+
     // 여러 타입의 값을 넣을 수 있음
     var a = [1, "2", [3]];  
-    a[2];                   //[3]
-    a[2][0];                //3
-    a.length;               // 3
+    a[2];                           // [3]
+    a[2][0];                        // 3
+    a.length;                       // 3
+```
+```javascript
 
     // 빈 배열을 다룰 때 유의!
-    var arr = [];               // 미리 크기를 정하지 않고도 선언할 수 있음
-    arr[0]);                    // undefined
+    var arr = [];                   // 미리 크기를 정하지 않고도 선언할 수 있음
+    arr[0]);                        // undefined
     arr[1] = 1;
     arr[3] = 3;
-    arr;                        // (4) [empty, 1, empty, 3]
-    arr.lenth;                  // 4
+    arr;                            // (4) [empty, 1, empty, 3]
+    arr.lenth;                      // 4
+```
+```javascript
 
     // 배열 요소 삭제 delete 
     var numbersArr = ['zero', 'one', 'two', 'three'];
     delete numbersArr[2];               // ["zero", "one", empty, "three"]
     numbersArr.length;                  // 4  값만 삭제함.
     numbersArr.splice(2, 1);            // ["zero", "one", "three"]
+```
+```javascript
 
     // 배열의 인덱스에 문자열을 추가 가능
     var a = [];
     a[0] = 1;
     a["test"] = 2;
-    a.length = 1                // 하지만 length가 증가하지는 않음
+    a.length = 1                         // 하지만 length가 증가하지는 않음
 
     // 키로 넣은 문자열 값이 10진수 숫자로 타입이 바뀌면 문자열 키가 아닌 숫자 키를 넣은 것과 같은 결과.. 
     var a = [];
     a["14"] = 1;
     a.length = 15;
 ```
+
 - 웬만하면 배열원소의 인덱스는 숫자만 쓰도록 하자!
+
+
+
+
 
 #### 유사배열
 - 배열의 형태를 가지고 있지만 배열이 아닌것.
@@ -113,21 +126,19 @@ function() {}                       // 함수 리터럴
 - 구분 : Array.isArray();
 
 ```javascript
-    var arr1 = ['aaa', 'bbb', 'ccc'];           // 배열 
-    var arr2 = document.body.children;          // 유사배열 형태의 DOM 원소 리스트 반환
+    var arr1 = ['aaa', 'bbb', 'ccc'];                   // 배열 
+    var arr2 = document.body.children;                  // 유사배열 형태의 DOM 원소 리스트 반환
 
-    Array.isArray(arr1);                        //true
-    Array.isArray(arr2);                        //false
+    Array.isArray(arr1);                                //true
+    Array.isArray(arr2);                                //false
 
     // 유사배열을 배열로 
-    var arr = Array.from(document.body.children);           //es6
+    var arr = Array.from(document.body.children);       //es6
     var arr = Array.prototype.slice.call(document.body.children);
     
     [].forEach.call(ele, function(element, index, array){ 
         console.log(element, index); 
         });
-
-    출처 : https://haenny.tistory.com/86
 
 ```
 #### 문자열
@@ -177,18 +188,22 @@ function() {}                       // 함수 리터럴
 - 숫자 값은 Number 객체 래퍼로 박싱할 수 있기 때문에 Number.prototype의 메서드로 접근 가능
 
 ```javascript
+
     //javascript 숫자 리터럴은 10진수 리터럴로 표시
     var a = 42;
     var b = 42.3;
+
 
     //아주 크거나 작은 숫자는 지수형으로 표시 .toExponential() 메서드의 결과와 같음
     var a = 5E10;               // 50000000000
     a.toExponential();          // "5e+10"
 
+
     // 숫자 값은 Number 객체 래퍼로 박싱할 수 있기 때문에 Number.prototype 메서드로 접근할 수 있음
     var a = 42.59;
     a.toFixed(0);               // 43
     a.toFixed(1);               // 42.6
+
 
     var onethousand = 1E3;      // 1* 10^3 , 큰숫자는 지수로 표시
     0xf3;                       // 243의 16진수
@@ -198,7 +213,7 @@ function() {}                       // 함수 리터럴
 - 이진 부동 소숫점 부작용, 미세한 반올림 오차는 Number.EPSILON (es6)를 사용
 ```javascript
     
-    0.1 + 0.2 === 0.3;           //false
+    0.1 + 0.2 === 0.3;                                  //false
     
     // 자바스크립트의 미세한 오차(머신 입실론)은 2의 -52승...ㅎ
     if (!Number.EPSILON) {
@@ -212,13 +227,14 @@ function() {}                       // 함수 리터럴
 
     var a = 0.1 + 0.2;
     var b = 0.3;
-    numberCloseEnoughToEqual(a, b);             // true;
+    numberCloseEnoughToEqual(a, b);                     // true;
 ```
 
 - 안전한 정수 범위 :2^53-1
 ```javascript
-    Number.MAX_SAFE_INTEGER                     //  9007199254740991         
-    Number.MIN_SAFE_INTEGER                     // -9007199254740991
+
+    Number.MAX_SAFE_INTEGER                             //  9007199254740991         
+    Number.MIN_SAFE_INTEGER                             // -9007199254740991
 ```
 
 - 정수인지 확인 : Number.isInteger();
@@ -230,6 +246,7 @@ function() {}                       // 함수 리터럴
 - void      : void ~~는 어떤 값이든 무효로 만들어 결과값을 undefined로 만듬
 - NaN       : 숫자아님 정확하게 말하면 유효하지 않은 숫자, 경계값의 일종으로 숫자 집합 내에서 특별한 종류의 에러상황을 나타냄
 - -0
+
 ```javascript
     var a = 2 / "foo";      // NaN
     a == NaN;               // false, 자기 자신과도 동등하지 않다...
@@ -326,15 +343,18 @@ function() {}                       // 함수 리터럴
 - .length, .toString()으로 접근하려면 원시값을 객체 래퍼로 감싸줘야함.
 - 자바스크립트는 원시 값을 알아서 박싱함.
 - 개발자가 굳이 객체 형태로 선 최적화 하면 프로그램이 느려질 수도 있기때문에 엔진에서 알아서 하도록 놔두는 것이 좋음
+
 ```javascript
+
     var a = 'abc';
-    a.length;           // 자동으로 박싱하므로 가능 -> String(a).length 와 동일
+    a.length;                   // 자동으로 박싱하므로 가능 -> String(a).length 와 동일
     a.toUpperCase;
 ```
 
 -  언박싱 : valueOf()
 
 ```javascript
+
     var a = new String("abc");  // 래퍼 박싱
     a.valueOf();                // abc
 ```
@@ -344,6 +364,7 @@ function() {}                       // 함수 리터럴
 - Array, Object, Function, RegExp 모두 리터럴 방식으로 쓰는 것을 권장.
 - Date(), Error()는 리터럴 방식이 없기 때문에 생성자로 사용.
 ```javascript
+
     var date = new Date();
     date;                   // Sun Sep 06 2020 22:26:28 GMT+0900 (대한민국 표준시)
     date.getDate();         // 6
@@ -352,6 +373,7 @@ function() {}                       // 함수 리터럴
 ```
 - Error 객체의 주 용도는 현재의 실행 스택 콘텍스트를 포착하여 객체에 담는 것으로 실행 스택 콘텍스트는 함수호출 스택, error가 만들어진 줄 번호 등 디버깅에 도움이 될 만한 정보를 담고있음, throw 연산자와 함께 사용
 ```javascript
+
    function foo(x) {
        if(!x) {
            throw new Error("x없음");
@@ -365,6 +387,7 @@ function() {}                       // 함수 리터럴
 - new를 붙이면 에러가나는 유일한 네이티브 '생성자'
 
 ```javascript
+
     var symbolProperty1  = Symbol('key'); // Symbol(key)
     var symbolProperty2  = Symbol('key'); // Symbol(key)
     var ob = {};
@@ -382,7 +405,9 @@ function() {}                       // 함수 리터럴
 #### 네이티브 프로토타입
 - 내장 네이티브 생성자는 각자의 .prototype 객체를 가짐 (Array.prototype, String.prototype 등)
 - .prototype 위임 덕분에 모든 문자열들이 prototype에 포함된 메서드를 쓸수있다.
+
 ```javascript
+
     var a = "abc";
     a.indexOf("c");
     a.toUpperCase();
