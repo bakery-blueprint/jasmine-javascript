@@ -40,20 +40,21 @@ typeof [1,2,3]              // object
     - undefined : 접근 가능한 스코프에 변수가 선언되었으나 아무런 값도 할당되지 않은 상태
     - undeclared : 접근 가능한 스코프에 변수 자체가 선언되지 않은 상태
 
-    ```javascript 
+```javascript 
     var a;
     typeof a                                // undefined
     typeof b                                // undefined
     if (typeof b != "undefined") {...}      // 안전가드, 안전하게 존재 여부 체크
-    ```
+```
     b 처럼 declared 되지 않은 것도 typeof를 쓰면 "undefined" 결과가 나온다 => undefined, undeclared 둘다 undefined 로 체크할 수 있음 (안전가드)
 
 
 ## 값
--  프로그램에 의해 조작될 수 있는 대상으로 가장 간단하게 생성할 수 있는 방법은 리터럴 표기법을 사용함
+- 프로그램에 의해 조작될 수 있는 대상으로 가장 간단하게 생성할 수 있는 방법은 리터럴 표기법을 사용함
+- 리터럴이란? 소스코드 안에서 직접 만들어 낸 상수 값 자체를 말하며 값을 구성하는 최소 단위
 
 ```javascript
-// 리터럴이란? 소스코드 안에서 직접 만들어 낸 상수 값 자체를 말하며 값을 구성하는 최소 단위
+
 10.50                               // 숫자 리터럴
 'Hello'                             // 문자열 리터럴
 true, false                         // 불리언 리터럴
