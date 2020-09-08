@@ -25,9 +25,9 @@ typeof [1,2,3]              // object
 - 즉, 변수는 고정된 타입이 없며, 같은 변수에 여러 타입의 값을 자유롭게 할당할 수 있음  
 
 ```javascript
-    var str  = 'Hello';
-    var num  = 1;
-    var bool = true;
+    var x  = 'Hello';
+    x = 1;
+    x = true;
 
     var foo = 'string';
     console.log(typeof foo); // string
@@ -37,8 +37,8 @@ typeof [1,2,3]              // object
 
 #### undefined, undeclared
         
-    - undefined : 접근 가능한 스코프에 변수가 선언되었으나 아무런 값도 할당되지 않은 상태
-    - undeclared : 접근 가능한 스코프에 변수 자체가 선언되지 않은 상태
+- undefined : 접근 가능한 스코프에 변수가 선언되었으나 아무런 값도 할당되지 않은 상태
+- undeclared : 접근 가능한 스코프에 변수 자체가 선언되지 않은 상태
 
 ```javascript 
     var a;
