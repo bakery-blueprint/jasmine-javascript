@@ -46,7 +46,7 @@ typeof [1,2,3]              // object
     typeof b                                // undefined
     if (typeof b != "undefined") {...}      // 안전가드, 안전하게 존재 여부 체크
 ```
-    b 처럼 declared 되지 않은 것도 typeof를 쓰면 "undefined" 결과가 나온다 => undefined, undeclared 둘다 undefined 로 체크할 수 있음 (안전가드)
+b 처럼 declared 되지 않은 것도 typeof를 쓰면 "undefined" 결과가 나온다 => undefined, undeclared 둘다 undefined 로 체크할 수 있음 (안전가드)
 
 
 ## 값
@@ -68,10 +68,10 @@ function() {}                       // 함수 리터럴
 
 #### 배열
 - 배열(array)은 1개의 변수에 여러 개의 값을 순차적으로 저장할 때 사용한다.
+-  문자열, 숫자, 객체, 다른 배열까지 어떤 타입의 값을 담을 수 있음. 배열 크기는 미리 정하지 않고도 선언할 수 있으며 원하는 값을 넣으면 됨.
 -  배열은 Array 생성자로 생성된 Array 타입의 객체이며 프로토타입 객체는 Array.prototype 임
 
--  문자열, 숫자, 객체, 다른 배열까지 어떤 타입의 값을 담을 수 있음
-        배열 크기는 미리 정하지 않고도 선언할 수 있으며 원하는 값을 넣으면 됨.
+
 
 
 ```javascript
@@ -86,7 +86,7 @@ function() {}                       // 함수 리터럴
 
     // 빈 배열을 다룰 때 유의!
     var arr = [];                   // 미리 크기를 정하지 않고도 선언할 수 있음
-    arr[0]);                        // undefined
+    arr[0];                        // undefined
     arr[1] = 1;
     arr[3] = 3;
     arr;                            // (4) [empty, 1, empty, 3]
@@ -136,16 +136,11 @@ function() {}                       // 함수 리터럴
     // 유사배열을 배열로 
     var arr = Array.from(document.body.children);       //es6
     var arr = Array.prototype.slice.call(document.body.children);
-    
-    [].forEach.call(ele, function(element, index, array){ 
-        console.log(element, index); 
-        });
-
 ```
 #### 문자열
 - 문자열은 배열과 겉모습이 닮은 유사배열, 하지만 배열은 아님
 - 배열과 공통점 : length 프로퍼티, indexOf() 메서드, concat() 메서드 
-- 배열과 차이점 : 문자열은 불변값, 배열은 가변값. 문자열 메서드는 그 내영을 바로 변경하지 않고 항상 새로운 문자열을 생성한 후 반환, 배열 메서드는 그 자리에서 곧바로 원소를 수정
+- 배열과 차이점 : 문자열은 불변값, 배열은 가변값. 문자열 메서드는 그 내용을 바로 변경하지 않고 항상 새로운 문자열을 생성한 후 반환, 배열 메서드는 그 자리에서 곧바로 원소를 수정
 
 ```javascript
     var a = "foo";                  // 문자열
