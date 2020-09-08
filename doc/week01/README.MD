@@ -1,13 +1,12 @@
 ## 타입
 
-### 타입이란?
-어떤 값을 다른 값과 구별할 수 있는, 고유한 내부 특성의 집합
+#### 타입이란?
+- 어떤 값을 다른 값과 구별할 수 있는, 고유한 내부 특성의 집합
 
-- 자바스크립트에서 제공하는 타입
+#### 자바스크립트에서 제공하는 타입
+- null, undefined, boolean, number, string, object, symbol
     
-    null, undefined, boolean, number, string, object, symbol
-    
-- typeof : 값의 타입
+#### typeof : 값의 타입
 
 ```javascript
 typeof undefined            // undefined
@@ -19,8 +18,10 @@ typeof Symbol()             // symbol
 typeof null                 // object
 typeof function a() {}      // function(object 하위타입)
 typeof [1,2,3]              // object
-```
-- 자바스크립트는 동적 타입 언어로, 변수의 타입 지정없이 값이 할당되는 과정에서 자동으로 변수의 타입이 결정됨. 즉, 변수는 고정된 타입이 없며, 같은 변수에 여러 타입의 값을 자유롭게 할당할 수 있음
+```  
+
+
+- 자바스크립트는 동적 타입 언어로, 변수의 타입 지정없이 값이 할당되는 과정에서 자동으로 변수의 타입이 결정됨. 즉, 변수는 고정된 타입이 없며, 같은 변수에 여러 타입의 값을 자유롭게 할당할 수 있음  
 
 ```javascript
     var str  = 'Hello';
@@ -33,10 +34,10 @@ typeof [1,2,3]              // object
     console.log(typeof foo); // number
 ```
 
-- undefined, undeclared
+#### undefined, undeclared
         
-    undefined : 접근 가능한 스코프에 변수가 선언되었으나 아무런 값도 할당되지 않은 상태
-    undeclared : 접근 가능한 스코프에 변수 자체가 선언되지 않은 상태
+    - undefined : 접근 가능한 스코프에 변수가 선언되었으나 아무런 값도 할당되지 않은 상태
+    - undeclared : 접근 가능한 스코프에 변수 자체가 선언되지 않은 상태
 
     ```javascript 
     var a;
@@ -48,7 +49,7 @@ typeof [1,2,3]              // object
 
 
 ## 값
-- 프로그램에 의해 조작될 수 있는 대상으로 가장 간단하게 생성할 수 있는 방법은 리터럴 표기법을 사용함
+-  프로그램에 의해 조작될 수 있는 대상으로 가장 간단하게 생성할 수 있는 방법은 리터럴 표기법을 사용함
 
 ```javascript
 // 리터럴이란? 소스코드 안에서 직접 만들어 낸 상수 값 자체를 말하며 값을 구성하는 최소 단위
@@ -63,10 +64,11 @@ undefined                           //undefined 리터럴
 function() {}                       // 함수 리터럴
 ```
 
-> 배열(array)은 1개의 변수에 여러 개의 값을 순차적으로 저장할 때 사용한다.
-> 배열은 Array 생성자로 생성된 Array 타입의 객체이며 프로토타입 객체는 Array.prototype 임
+#### 배열
+- 배열(array)은 1개의 변수에 여러 개의 값을 순차적으로 저장할 때 사용한다.
+-  배열은 Array 생성자로 생성된 Array 타입의 객체이며 프로토타입 객체는 Array.prototype 임
 
--  배열 : 문자열, 숫자, 객체, 다른 배열까지 어떤 타입의 값을 담을 수 있음
+-  문자열, 숫자, 객체, 다른 배열까지 어떤 타입의 값을 담을 수 있음
         배열 크기는 미리 정하지 않고도 선언할 수 있으며 원하는 값을 넣으면 됨.
 
 
@@ -104,10 +106,11 @@ function() {}                       // 함수 리터럴
 ```
 - 웬만하면 배열원소의 인덱스는 숫자만 쓰도록 하자!
 
--  유사배열: 배열의 형태를 가지고 있지만 배열이 아닌것.
-1. 조건1 : 반드시 length가 필요하다.
-2. 조건2 : index의 번호가 0번부터 시작해서 1씩 증가해야한다. 
-3. 구분 : Array.isArray();
+#### 유사배열
+- 배열의 형태를 가지고 있지만 배열이 아닌것.
+- 조건1 : 반드시 length가 필요하다.
+- 조건2 : index의 번호가 0번부터 시작해서 1씩 증가해야한다. 
+- 구분 : Array.isArray();
 
 ```javascript
     var arr1 = ['aaa', 'bbb', 'ccc'];           // 배열 
@@ -127,8 +130,8 @@ function() {}                       // 함수 리터럴
     출처 : https://haenny.tistory.com/86
 
 ```
-
-> 문자열 : 문자열은 배열과 겉모습이 닮은 유사배열, 하지만 배열은 아님
+#### 문자열
+- 문자열은 배열과 겉모습이 닮은 유사배열, 하지만 배열은 아님
 - 배열과 공통점 : length 프로퍼티, indexOf() 메서드, concat() 메서드 
 - 배열과 차이점 : 문자열은 불변값, 배열은 가변값. 문자열 메서드는 그 내영을 바로 변경하지 않고 항상 새로운 문자열을 생성한 후 반환, 배열 메서드는 그 자리에서 곧바로 원소를 수정
 
@@ -167,7 +170,8 @@ function() {}                       // 함수 리터럴
     var c = a.splite("").reverse().join();      
 ```
 
-> 숫자 : javascript 숫자 타입은 Number가 유일하며 정수, 부동 소숫점 숫자를 모두 아우름
+#### 숫자  
+- javascript 숫자 타입은 Number가 유일하며 정수, 부동 소숫점 숫자를 모두 아우름
 - 숫자 리터럴은 10진수 리터럴로 표시 
 - 아주 크거나 작은 숫자는 지수형으로 표시.
 - 숫자 값은 Number 객체 래퍼로 박싱할 수 있기 때문에 Number.prototype의 메서드로 접근 가능
@@ -220,7 +224,7 @@ function() {}                       // 함수 리터럴
 - 정수인지 확인 : Number.isInteger();
 - 안전한 정수 여부 (es6부터) : Number.isSafeInteger();
 
-> 특수값
+#### 특수값
 - undefined : undefined 타입의 값은 undefined 밖에 없음
 - null      : null 타입의 값도 null 뿐.
 - void      : void ~~는 어떤 값이든 무효로 만들어 결과값을 undefined로 만듬
@@ -239,8 +243,8 @@ function() {}                       // 함수 리터럴
     Object.is(a, NaN)       // true, es6에서 두 값이 절대적으로 동등한지를 확인하는 유틸리티
 ```
 
-> 값 복사 vs 레퍼런스 복사 
-자바스크립트에는 값 또는 레퍼런스의 할딩 및 전달을 제어하는 구문암시가 전혀 없음. 값의 타입만으로 값-복사, 레퍼런스-복사 둘중에 한 쪽이 결정됨. 값의 타입을 보고 엔진의 재량으로 결정
+#### 값 복사 vs 레퍼런스 복사 
+- 자바스크립트에는 값 또는 레퍼런스의 할딩 및 전달을 제어하는 구문암시가 전혀 없음. 값의 타입만으로 값-복사, 레퍼런스-복사 둘중에 한 쪽이 결정됨. 값의 타입을 보고 엔진의 재량으로 결정
 - null, undefined, string, number, boolean, symbol과 같은 원시타입 :  값 복사
 - 배열, 함수, 정규표현식 등 원시타입을 제외  : 레퍼런스-복사
 
@@ -277,8 +281,9 @@ function() {}                       // 함수 리터럴
 
 
 ## 네이티브
-> 네이티브 객체는 ECMAScript 명세에 정의된 객체를 말하며 애플리케이션 전역의 공통 기능을 제공, 특정 환경에 종속되지 않음
+- 네이티브 객체는 ECMAScript 명세에 정의된 객체를 말하며 애플리케이션 전역의 공통 기능을 제공, 특정 환경에 종속되지 않음
 
+#### 종류
 - String()
 - Number()
 - Boolean()
@@ -295,7 +300,8 @@ function() {}                       // 함수 리터럴
     typeof a;                   // 결과 : object, 원시값 "abc"가 아닌 "abc"를 감싼 객체 래퍼
 ```
 
-> 내부 [[Class]] -> 굳이 호출할 일이 있을까?
+#### 내부 [[Class]] 
+- 굳이 호출할 일이 있을까?
 - typeof가 object인 값(배열 등)에는 [[Class]]라는 내부 프로퍼티가 추가로 붙음
 - 직접 접근 불가하며, Object.prototype.toString()라는 메서드에 값을 넣어 호출하여 존재 확인 가능.
 
@@ -314,7 +320,7 @@ function() {}                       // 함수 리터럴
     Object.prototype.toString.call(true);               //"[object Boolean]"
 ```
 
-> Wrapper
+#### Wrapper
 원시 타입 값에 대해 표준 빌트인 객체의 메소드를 호출할 때, 원시 타입 값은 연관된 객체(Wrapper 객체)로 일시 변환 됨.. 그리고 메소드 호출이 종료되면 객체로 변환된 원시 타입 값은 다시 원시 타입 값으로 복귀
 
 - .length, .toString()으로 접근하려면 원시값을 객체 래퍼로 감싸줘야함.
@@ -326,14 +332,14 @@ function() {}                       // 함수 리터럴
     a.toUpperCase;
 ```
 
-> 언박싱 : valueOf()
+-  언박싱 : valueOf()
 
 ```javascript
     var a = new String("abc");  // 래퍼 박싱
     a.valueOf();                // abc
 ```
 
-> 네이티브 생성자 
+#### 네이티브 생성자 
 - 확실히 필요해서 쓰는게 아니라면, 생성자는 가급적 쓰지 않는게 좋음.
 - Array, Object, Function, RegExp 모두 리터럴 방식으로 쓰는 것을 권장.
 - Date(), Error()는 리터럴 방식이 없기 때문에 생성자로 사용.
@@ -353,7 +359,7 @@ function() {}                       // 함수 리터럴
    }
 ```
 
-> Symbol() 
+#### Symbol() 
 - ES6에서 선보인 새로운 원시 값 타입으로 충돌 염려 없이 객체 프로퍼티로 사용 가능한 특별한 '유일 값', ES6의 특수한 내장 로직에 쓰이기 위해 고안
 - 객체의 고유한 식별자
 - new를 붙이면 에러가나는 유일한 네이티브 '생성자'
@@ -373,7 +379,7 @@ function() {}                       // 함수 리터럴
     console.log(ob);
 ```
 
-> 네이티브 프로토타입
+#### 네이티브 프로토타입
 - 내장 네이티브 생성자는 각자의 .prototype 객체를 가짐 (Array.prototype, String.prototype 등)
 - .prototype 위임 덕분에 모든 문자열들이 prototype에 포함된 메서드를 쓸수있다.
 ```javascript
@@ -387,8 +393,8 @@ function() {}                       // 함수 리터럴
 
 
 
-**과제
-https://poiemaweb.com/js-array
-https://poiemaweb.com/js-string
+#### 과제
+- https://poiemaweb.com/js-array
+- https://poiemaweb.com/js-string
 를 읽어보고 예제를 한번씩 타이핑 해보기!
 
