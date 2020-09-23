@@ -1,130 +1,139 @@
-# 4. 강제 변환
+# 5.문법
 
-## 4.1. 값 변환
+## 5.1. 문과 표현식
 
-- 명시적 강제변환
-  - 코드만 봐도 의도적으로 일으킨다는 사실이 명백함
-- 암시적 강제변환
-  - 불분명한 부수 효과로부터 발생
+- 문과 표현식
+  - 익숙하게. 문장/어구 /구두점,접속사
+  - 적용하여, 문 /표현식/연산자
 
+```javascript
+var a = 3 * 6; 
+var b = a; 
+b;
+// 문 : var a, var b, b
+// 표현식 : 3 * 6, a, b
+// 연산자 : =, *
+```
+
+## 5.1.1 문의 완료 값
+
+- 모든 문은 완료 값을 가진다. 그 값이 undifined라 할지라도.
+- 한 마디로 콘솔은 실행한 문의 완료 값을 보고하며 이 값은 개발자가 내부 프로그램에서 사용할 수 있는 값이 아니다.
+  -> 콘솔의 완료 값을 순간 포착할 방법은 없을까?
+  
 ```javascript
 var a = 42;
-
-var b = a + ""; // 암시적 강제 변환
-
-var c = String(a); // 명시적 강제변화
+// > undefined.
 ```
 
-## 4.2. 추상 연산
-
-- 값 -> 문자열 / 숫자 / 불리언 등의 타입으로 변하는 기본 규칙
-
-### 4.2.1. ToString
-
-- '문자열이 아닌 값' -> '문자열' 변환 작업은 ToString 추상 연상 로직이 담당
-- 내장 원시 값은 본연의 문자열 화 방법이 정해져 있음
-- 일반 객체 : Object.prototype.toString() 동작 -> 내부 [[Class]] 를 반환
-- toString() 정의 객체 : 자동으로 기존 toString()을 대체
-
-> ### JSON 문자열화
->
-> ---
->
-> ```javascript
-> JSON.stringify(42); // "42"
->
-> JSON.stringify("42"); // ""42""
-> "42".toString(); // "42"
->
-> JSON.stringify(null); // "null"
-> null.toString(); // Uncaught TypeError: Cannot read property 'toString' of null
->
-> JSON.stringify(undefined); // undefined
-> undefined.toString(); // Uncaught TypeError: Cannot read property 'toString' of undefined
->
-> JSON.stringify(function () {}); // undefined
-> (function () {}.toString()); // "function() {}"
-> ```
->
-> - Json 안전값은 모두 문자열화 가능
-> - 안전하지 않은 값들은 JSON 문자열에서 자동으로 누락 시킴
-> - 배열안에 포함 -> undefined
-> - 객체 프로퍼티 포함 -> 지워 버림
->
-> - 부적절한 JSON 값처리, 직렬화를 정의하기 위해 toJSON()을 정의
-> - toJSON()은 적절한 값을 반환
-> - 문자열화는 JSON.stringify()가 담당
-
-### 4.2.2 ToNumber
-
-- '숫자가 아닌 값' -> '수식 연산이 가능한 숫자' 변환 로직은 ToNumber 추상 연산에 정의
-
-* 변환에 실패하면 결과는 NaN이다.
-* 8진수 앞에 0이 붙으면 ToNumber은 8진수로 처리하지 않는다.
+- 방법 1 : { } 블록은 내부의 가장 마지막 문/표현식의 완료 값을 자신의 완료 값으로 반환한다.
+          하지만, 변수에 결과 값을 담을 수 없다.
 
 ```javascript
-var o = 0o11; // (1 * 8) + (0 * 8) = 9
-console.log(o); // 9
-Number(o); // 9
+var b;
+if(true) {
+    b = 4 + 38;
+}
+// > 42
 ```
 
-- 객체의 경우
+- 방법 2 : eval() 함수 / 참고로, 책에서도 말하지만 쓰레기다.
+          과제. 문제가 되는 사례 및 대체
+          과제이유. 경각심 부각
 
-  1. 동등한 원시 값으로 변경
-  2. 해당 결과 값을 ToNumber 규칙에 의해 변경
+```javascript
+var a,b;
+a = eval("if(true) { b = 4+38; }");
+a;
+// > 42
+```
 
-* 동등한 원시값으로 변경하는 방법
+- 방법 3 : 'do 표현식' ES7 명세, 실제 사용에 실패하여 코드를 적지 않음.
 
-  1. 동등한 원시값으로 변경하기 위해서는 ToPrimitive 추상 연산이 동작함
-  2. 해당 객체가 valueOf를 구현했는지 확인
-  3. valueOf를 구현했고, 반환 값이 원시 값이면 강제 변화
-  4. 그렇지 않으면 toString을 이용해 강제 변환
+### 5.1.2. 표현식의 부수 효과
 
-> ### ToPrimitive
+- 부수 : 주된 것이나 기본적인 것에 붙어서 따름. 또는 그러한 것에 붙어 따르게 함. (국어사전)
+- 부수 효과를 지닌 여러가지 표현식 : function, ++, --, = 
+- 개인적으로, 잘 사용한다면 코드를 맛깔나게 줄일 수 있다 정도의 장점밖에 모르겠습니다.
+
+```javascript
+//function
+function foo() {
+    a = a + 1;
+}
+var a = 1;
+foo();
+a;
+```
+
+```javascript
+//++, --
+var a = 42;
+var b = a++;
+
+var a = 42;
+a++;
+++a;
+```
+
+```javascript
+//=
+var a, b, c;
+a = b = c = 42;
+```
+
+### 5.1.3 콘텍스트 규칙
+
+- Context(문맥) : 같은 표현이라도 문장의 흐름에 따라 뜻이 달라질 수 있다.(국어사전X)
+* Ex) 나는 아직도 배가 고프다.
+- 같은 구문이지만 어디에서 어떤 식으로 사용하느냐에 따라 서로 다른 의미를 가지는 경우가 있다. 
+* Ex) 중괄호
+
+> 중괄호 1 : 객체 리터럴
+
+>```javascript
+>function bar() {
+>    return 10;
+>}
+>var a = {
+>    foo: bar()
+>};
+>```
 >
-> ---
+>- 중괄호 2 : 레이블, P161, 책 내용이 잘 이해되지 않음.
+>* 이 { } 코드 블록은 for/while 루프, if 조건 등에 붙어있는 코드 블록과 기능적으로 매우 유사하다.
 >
-> - ToString, ToNumber 와 같은 추상 명세
-> - 명시적으로만 정의됨 -> 규칙
-> - 엔진이 알아서 처리 함
+>```javascript
+>//foo라는 레이블을 정의.
+>foo: for(var i=0; i<4; i++) {
+>  for(var j=0; j<4; j++) {
+>    if(j == i) {
+>      continue foo;
+>      //break foo;
+>    }
+>    
+>    if((j*i)%2 == 1) {
+>      continue;
+>      //break;
+>    }
+>    console.log(i,j);
+>  }
+>}
+>```
 >
-> ---
+>```javascript
+>//bar라는 레이블을 정의.
+>function foo() {
+>  bar: {
+>    console.log("a");
+>    break bar;
+>    console.log("b");
+>  }
+>  console.log("c");
+>}
 >
-> - 객체의 형 변환은 3가지 종류로 구분
-> - 구분 기준은 'hint' 라는 값으로 명명
->
-> ### 1. string
->
-> - hint 가 string 이 되는, 즉 변경 대상 객체가 string 형으로 변경되어야 할 때
-> - ex) [Window.alert()](https://developer.mozilla.org/ko/docs/Web/API/Window/alert), 객체를 프로퍼티 키로 사용 하려고 할 때
->
-> ```javascript
-> alert(obj);
-> another[obj] = 123;
-> ```
->
-> ### 2. number
->
-> - 수학을 할 때와 같이 객체를 숫자로 변환하는 경우
->
-> ```javascript
-> // 명시적 형 변환
-> let num = Number(obj);
-> // (이항 덧셈 연산을 제외한) 수학 연산
-> let n = +obj; // unary plus
-> let delta = date1 - date2;
-> // 크고 작음 비교하기
-> let greater = user1 > user2;
-> ```
->
-> ### 3. default
->
-> 연산자가 기대하는 자료형이 확실하지 않을 때, hint는 default가 된다. 예를 들어 이항 덧셈 연산자인 +는 피연산자의 자료형에 따라 문자열을 합칠 수도 있고, 숫자를 더해줄 수도 있다. 이런 경우에 hint는 default가 된다.
->
-> ### 4. 순서
->
-> 1. hint가 string이라면, obj.toString()이나 obj.valueOf()를 호출한다. (존재하는 메소드 우선 실행)
-> 2. hint가 number, default일 경우, obj.valueOf()나 obj.toString()을 호출한다. (존재하는 메소드 우선 실행)
+>foo();
+>```
 
 ### 4.2.3. To Boolean
 
