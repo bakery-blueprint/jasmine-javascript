@@ -99,10 +99,10 @@ a = b = c = 42;
 >    foo: bar()
 >};
 >```
->
->- 중괄호 2 : 레이블, P161, 책 내용이 잘 이해되지 않음.
+
+> 중괄호 2 : 레이블, P161, 책 내용이 잘 이해되지 않음.
 >* 이 { } 코드 블록은 for/while 루프, if 조건 등에 붙어있는 코드 블록과 기능적으로 매우 유사하다.
->
+
 >```javascript
 >//foo라는 레이블을 정의.
 >foo: for(var i=0; i<4; i++) {
@@ -135,50 +135,49 @@ a = b = c = 42;
 >foo();
 >```
 
-### 4.2.3. To Boolean
+> 중괄호 3 : 블록
 
-- js 에서는 강제변환을 통해 true <-> 1, false <-> 0 가능은 하지만 각각 별개의 값
-- 강제 변환은 가능
+>```javascript
+>[] + {}; // "[object Object]", [] " " 강제변환, {} "[object Object]" 강제변환
+>{} + []; // 0, {} 빈블록, + [] 0 강제변환
+>```
 
-  > c++ 에서 true <-> 1, false <-> 0
-  >
-  > ```c++
-  > int main() {
-  >     std::cout << true << std::endl; // true evaluates to 1
-  >      std::cout << !true << std::endl; // !true evaluates to 0
-  >     bool b(false);
-  >     std::cout << b << std::endl; // b is false, which evaluates to 0
-  >     std::cout << !b << std::endl; // !b is true, which evaluates to > 1
-  >     return 0;
-  >  }
-  > ```
+> 중괄호 4: 객체분해, ES6부터 객체 분해 시 { }를 사용한다.
+>
+>```javascript
+>function getData() {
+>  return {
+>    a: 42,
+>    b: "f"
+>  };
+>}
+>var { a, b } = getData();
+>console.log(a,b); 
+>//42, f
+> /*
+> var res = getData();
+> var a = res.a;
+> var b = res.b;
+> */
+>```
 
-- Boolean 에 대응하는값으로 변경 했을 때 대응 하는 값들을 Falsy / Truthy 라고 함
+> 중괄호 4 : else if와 선택적 블록
+> * if/else if/else --> if/else(if/else)
+> * 단일 블록은 { } 필요가 없지만, 스타일 가이드 문서대로 개발을 진행하는 것이 좋다.
 
-#### Falsy 값
+## 5.2. 연산자 우선순위
 
-- Boolean 에 대응하는값으로 강제변환했을 때, 이 값들은 어떻게 작동?
-  1. 불리언으로 강제변환하면 false 가 되는 값 (Falsy 값)
-  2. 1번을 제외한 나머지(Truthy 값)
-- 모든 객체는 명백히 truthy 하다.
-- falsy 값 목록 (강제 변환시 false)
-  1. undefinde
-  2. null
-  3. false
-     4.+0, -0, NaN
-  4. ""
+- &&, || 복습시간.
+- 이러한 연산자에 우선순위가 존재한다.
+- 책에 MDN 웹사이트 연산자 우선순위 참고 
+- https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/%EC%97%B0%EC%82%B0%EC%9E%90_%EC%9A%B0%EC%84%A0%EC%88%9C%EC%9C%84
+```javascript
+if( str && (matches = str.match( /[aeiou]/g ))){ //... }
+if( str && matches = str.match( /[aeiou]/g )){ //... }
+```
+### 5.2.1 단락 평가
 
-#### Falsy 객체
 
-- 모든 객체는 truthy 하다.
-- Falsy 객체란?
-- Falsy 객체에 해당하는 객체는 js 표준이 아닌 다른 컨텍스트에 속한 객체
-- 대표적으로 브라우저에 속한 documenmt.all 값
-- 사용 이유 : 레거시 추출 & 꼼수 -> 추천 ㄴㄴ
-
-#### truthy 값
-
-- falsy 값 목록에 없으면 무조건 truthy 값
 
 ## 4.3. 명시적 강제변환
 
