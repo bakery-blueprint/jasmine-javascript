@@ -526,3 +526,8 @@ a = 2; // LHS
 ```
 
 ## 1.4. 오류
+- LHS, RHS 검색 방식이 다르다.
+```javascript
+aaaa = 30; // LHS, Not Error! 
+bbbb; // RHS, ReferenceError! 
+```
