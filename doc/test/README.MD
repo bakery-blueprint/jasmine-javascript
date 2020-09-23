@@ -263,9 +263,123 @@ function foo(){
 
 ## 5.4. 에러
 
-- 자바스크립트 
+- 자바스크립트 Error : Rumtime Error, Compile Error.
+```javascript
+var a;
+42 = a; // Error.
+```
 
+- ES5에는 엄격 모드가 존재하여 사용하면 Compile Error, Early Error를 깐깐하게 걸러낼 수 있다.
+- https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Strict_mode
 
+```javascript
+// use strict Ex 1. 함수 인자 중복
+function aa(a,a){"use strict"};
+function aa(a,a){};
+
+// use strict Ex 2. 선언하지 않은 변수
+"use strict"
+awejiofawjeifo = 1;
+
+// use strict Ex 3. 중복 변수
+"use strict"
+var a = {
+  b:43, b:42
+};
+```
+
+### 5.4.1. 너무 이른 변수 사용
+- ES에는 TDZ(Temporal Dead Zone)이라는 새로운 개념이 도입.
+- TDZ는 아직 초기화를 하지 않아 변수를 참조할 수 없는 코드 영역.
+
+> Hoisting : 끌어올리다. 들어올리다.
+> 자바스크립트에서 var 변수는 Hoisting이 가능하지만, let/const는 Hoisting이 되지 않음.
+> 이 때, let/const의 초기화 전 변수들은 TDZ에 있다..는 이야기입니다.
+>```javascript
+>// Hoisting 
+>console.log(foo); // Not Error! undefined!
+>
+>// Not Hoisting
+>console.log(bar); // Error! Reference Error!
+>let bar = 42;
+>```
+
+>```javascript
+>// var Scope - 전역
+>{
+>  var foo = 456; // 전역 변수
+>}
+>console.log(foo); // 456
+>
+>// let Scope - Block
+>let foo = 123; // 전역 변수
+>{
+>  let foo = 456; // 지역 변수
+>  let bar = 456; // 지역 변수
+>}
+>
+>console.log(foo); // 123
+>console.log(bar); // ReferenceError: bar is not defined
+>```
+
+## 5.5. 함수 인자
+
+- TDZ 개념을 잘 이해하지 못하였지만, 초기화하지 않은 변수 상태면 TDZ에 들어있는 개념입니다.
+- 또한, 아래와 같은 함수 매개변수도 TDZ 내부에 있으므로 정의 시 주의해야 합니다.
+- 좌측에서 우측 순서로 let 선언을 한 것과 동일하게 처리됨.
+
+```javascript
+var a = 2;
+function square(a = a) {
+  return a * a;
+}
+square(); // ReferenceError!
+```
+
+- 함수 매개변수, Arguments 배열
+- 어렵다..
+
+```javascript
+function foo(a=42, b=a+1) {
+  console.log(
+    arguments.length,
+    arguments[0],
+    arguments[1],
+    a,b
+  );
+};
+
+foo();
+foo(10);
+foo(10, undefined);
+foo(10, null);
+
+// undefined Vs. '' Vs. null
+function test(num = 1) {
+  console.log(typeof num)
+}
+
+test()            // 'number' (num 은 1로 설정됨)
+test(undefined)   // 'number' (num 이 역시 1로 설정됨)
+
+// 다른 falsy values로 테스트 하기:
+test('')          // 'string' (num 은 ''로 설정됨)
+test(null)        // 'object' (num 은 null로 설정됨)
+```
+
+- 인자 및 Arguments 연결 예제.
+- 이리하여, 인자와 arguments를 함꼐 사용하지 마라!
+```javascript
+function foo(a) {
+  a = 42;
+  console.log(arguments[0]);
+}
+
+foo(2);
+foo();
+foo(undefined);
+foo(null);
+```
 
 
 
