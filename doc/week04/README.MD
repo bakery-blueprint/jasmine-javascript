@@ -132,7 +132,6 @@ foo(2);
 
   - 런타임때 렉시컬 스코프 속이는법
     - eval()
-    <br>
     ```javascript
     function foo(str,a){
         eval(str);
