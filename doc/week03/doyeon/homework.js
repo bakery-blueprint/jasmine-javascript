@@ -34,22 +34,22 @@ console.log(looseJsonParse(
 //그러나 ASI가 세미콜론을 찾는 규칙은 기억하기 어려울 정도로 복잡하므로 명시적으로 세미콜론을 넣기를 권장합니다. 디음과 같은 상황을 고려해 봅시다.
 
 // 원래 코드
-function getData() {
+`function getData() {
     return
         {
             title: 'Maintainable Javascript',
             author: 'Nicholas C. Zakas'
         }
-}
+}`
 
 // 파서가 생각하는 코드
-function getData() {
+`function getData() {
     return;
         {
             title: 'Maintainable Javascript',
             author: 'Nicholas C. Zakas'
         };
-}
+}`
 //이 예제에서 우리가 보기에 getData()는 데이터가 포함된 객체를 반환하는 힘수입니다. 
 //하지만 ASI는 return 문 이후에 새로운 줄이 있으니 당연히 세미콜론을 삽입합니다. 
 //따라서 getData 함수는 undefined를 반환합니다. 이 문장을 다음 예제처럼 return 문과 같은 줄에 중괄호를 표기하면 정상 값을 반환합니다.
