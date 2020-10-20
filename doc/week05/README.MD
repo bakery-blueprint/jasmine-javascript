@@ -126,6 +126,8 @@ foo();
     foo.call(obj);          //foo.call에서 명시적으로 바인딩하여 함수를 호출하므로 this는 obj가 됨
 ```
 
+- 명시적으로 바인딩 해도 this 바인딩이 도중에 소실되거나 프레임워크가 임의로 덮어버릴 수도 있다. -> 이럴땐 하드바인딩을 사용한다.
+
 ```javascript
     function foo() {
         console.log(this.a);
@@ -134,7 +136,7 @@ foo();
         a : 2
     }
     var bar = function() {
-        foo.call(obj);                  // 하드바인딩
+        foo.call(obj);          // 하드바인딩 : bar 함수 내부에서 foo.call(obj)로 foo를 호출하면서 obj를 this에 강제로 바인딩 하도록 하드 코딩
     }
     bar();                      //2
     setTimeout(bar, 100);       //2
@@ -143,7 +145,7 @@ foo();
 - bar 함수 안에 foo.call로 하드바인딩 했기 때문에 뭘해도 obj로 바인딩 되어 2로 출력됨.
 
 - 하드바인딩으로 함수를 감싸는 형태의 코드는 인자를 넘기고 반환 값을 돌려받는 창구가 필요할 때 주로 쓰임
-- 재사용 가능한 헬퍼 함수
+- 재사용 가능한 헬퍼 함수도 반환 값을 돌려받는 창구가 필요할 때 쓰인다.
 ```javascript
     function foo(somthing) {
         console.log(this.a, something);
@@ -180,6 +182,7 @@ foo();
 ```
 
 #### 2.2.4 new 바인딩
+- 자바스크립트 생성자는 앞에 new 연산자가 있을 때 호출되는 일반 함수에 불과하다.
 - 함수 앞에 new를 붙여서 생성자를 호출하면
 1. 새 객체가 만들어진다.
 2. 새로 생성된 객체의 [[prototype]]이 연결된다.
@@ -194,9 +197,10 @@ foo();
     var bar = new foo(2);
     console.log(bar.a);
 ```
-
+- 앞에 new를 붙여서 foo()를 호출했고, 새로 생성된 객체는 foo 호출시 this에 바인딩 된다.
 
 ### 2.3 우선순위
+
 1. new로 함수를 호출? -> 맞으면 새로 생성한 객체가 this
 ```javascript
     var bar = new foo();
