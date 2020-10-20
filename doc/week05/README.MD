@@ -244,10 +244,10 @@ foo();
     }
     
     // DMZ 객체 생성
-    var o = Object.create(null);    // {}와 비슷하나 Object.prototype 으로 위임하지 않으므로 더 텅빈 객체임
+    var ∅ = Object.create(null);    // {}와 비슷하나 Object.prototype 으로 위임하지 않으므로 더 텅빈 객체임
 
     //인자들을 배열 형태로 쭉 펼침
-    foo.apply(o, [2,3]);
+    foo.apply(∅, [2,3]);
 ```
 
 #### 2.4.2 간접 레퍼런스
@@ -263,7 +263,7 @@ foo();
     o.foo();    //3
     (p.foo = o.foo)(); //2 
 ```
--  (p.foo = o.foo)의 결과값은 원함수 객체의 레퍼런스로 foo()가 되며 기본바인딩 규칙이 적용된다.
+-  (p.foo = o.foo)의 결과값은 원함수 객체의 레퍼런스로 foo()가 되며 기본바인딩 규칙(엄격모드는 undefined, 비엄격 모드는 전역객체)이 적용된다.
 
 #### 2.4.3 소프트 바인딩
 - 암시적/명시적 바인딩 기법을 통해 임의로 this 바인딩을 하는 동시에 전역 객체나 undefined가 아닌 다른 기본 바인딩 값을 세팅
@@ -295,22 +295,21 @@ foo();
     var fooOBJ = foo.softBind(obj);
     fooOBJ();   //name : obj
 
-    // obj2, obj3롷 수동 바인ㄷ,
+    // obj2, obj3로 수동 바인딩,
     obj2.foo = foo.softBind(obj);
     obj2.foo();     // name : obj2
 
     fooOBJ.call(obj3);  // name : obj3
 
-    setTimeout(obj2.foo, 10);   //name : obj -> 소프트 바인딩 적용
+    setTimeout(obj2.foo, 10);   //name : obj -> 소프트 바인딩 적용(setTimeout에서 기본바인딩이 됨)
 ```
 
 ### 2.5 어휘적 this
 - 화살표 함수는 function 키워드 대신 뚱뚱한 화살표 연산자로 불리는 =>를 써서 표현하며, 4가지 표준규칙 대신 에두른 스코프를 보고 this를 알아서 바인딩
-- 렉시컬 스코프로 this 바인딩
 ```javascript
     function foo() {
         return (a) => {
-            console.log(this.a);
+            console.log(this.a);  // this는 어휘적으로 'foo()'에 상속됨
         }
     }
     var obj1 = {
@@ -322,7 +321,39 @@ foo();
     }
 
     var bar = foo.call(obj1);
-    bar.call(obj2);
+    bar.call(obj2);      //2
 ```
 - foo() 내부에 생성된 화살표 함수는 foo() 호출 당시 this를 무조건 어휘적으로 포착, foo()는 obj1에 this가 바인딩 되므로 bar의 this 역시 obj1으로 바인딩 됨.
+- 화살표 함수의 어휘적 바인딩은 절대로 오버라이드 할 수 없음.
 
+- 화살표 함수는 이벤트 처리기나 타이머 등 콜백에 많이 쓰임
+```javascript
+ function foo() {
+  setTimeout(() => {
+   console.log(this.a);
+  }, 100);
+  var obj = {
+    a : 2
+  };
+  
+  foo.call(obj);     // 2
+```
+- 화살표 함수는 this를 확실히 보장하는 수단으로 bind()를 대체할 수 있고 겉보기에도 끌리는 구석이 있지만, 결과적으로 더 잘 알려진 렉시컬 스코프를 쓰겠다고 기존의 this 체계를 포기하는 형국이라는 점을 간과하면 안됨.
+
+```javascript
+ // 화살표 함수 전에 콜백에서 this를 쓰던 방식
+ function foo() {
+  var self = this;
+  setTimeout(function() {
+   console.log(self.a);
+  }, 100);
+  var obj = {
+    a : 2
+  };
+  
+  foo.call(obj);     // 2
+```
+
+-self = this나 화살표 함수 모두 bind()대신 사용 가능한 해결책이지만 this를 제대로 이해하고 수용하기 보단 골치아픈 this 에서 도망치려는 꼼수라고 할 수 있음.
+- 1. 오직 렉시컬 스코프만 사용하고 가식적인 this 스타일의 코드는 접어둔다.
+- 2. 필요하면 bind()까지 포함하여 완전한 this 스타일의 코드를 구사하되 self = this나 화살표 함수같은 소위 어휘적 this 꼼수는 삼가하도로가자.
