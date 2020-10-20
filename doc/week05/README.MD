@@ -109,6 +109,20 @@ foo();
     var a = "전역";
     doFoo(obj.foo);     //인자로 전달하는건 일종의 암시적인 할당으로 함수를 인자로 넘기면 암시적으로 래퍼런스가 할당되어서 "전역"으로 출력됨
 ```
+## 과제 
+- setTimeout 호출 후 2가 출력되도록 하는 3가지 방법을 작성하시오
+```javascript
+    function foo() {
+        console.log(this.a);
+    }
+    var obj = {
+        a : 2,
+        foo : foo
+    };
+
+    var a = "전역";
+    setTimeout(obj.foo, 100);   // 전역
+```
 
 #### 2.2.3 명시적 바인딩
 - call(), apply() 를 통해 this를 지정한 객체로 직접 바인딩
