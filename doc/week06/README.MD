@@ -331,7 +331,6 @@ myObj.a; // 6
 - 봉인 + writable:false 로 변경
 - 직속 프로퍼티는 전부 동결
 - 참조하는 레퍼런스에 해당하는 객체 값은 변경 안함
-- 프로퍼티로 설정된 객체는 전부 재귀 순회하며 동결
 
 ```javascript
 var anotherObj = {
@@ -370,6 +369,8 @@ Object.getOwnPropertyDescriptors(anotherObj);
 Object.getOwnPropertyDescriptors(anotherArray);
 // 0: {value: 1, writable: true, enumerable: true, configurable: true}
 ```
+
+> # 과제 1. deep freeze 하는 메소드를 작성하시오 (window 객체일 경우에는 freeze 를 패스하는 하는 로직도 추가하시오)
 
 ### 3.6. [[Get]]
 
@@ -442,3 +443,31 @@ myObj.hasOwnProperty("b"); // false
 - 값 자체를 순회하기 위해서는 순회하려는 대상안에 @@iterator 라는 기본 내부 함수가 존재해야 한다.
 - 일반 객체에는 @@iterator 라는 기본 내부 함수가 존재하지 않는다.
 - 이것을 직접 정의 할 수 있다.
+
+> # 과제 2.
+>
+> 1. 객체를 리터럴 형식으로 하나 선언하고 프로퍼티를 선언하세요
+> 2. 객체안에 있는 모든 프로퍼티를 표현하는 getter 를 선언하세요
+>
+> ```javascript
+> // ex
+> var person = {
+>   firstName: "jaehyun",
+>   lastName: "lim",
+>   get fullName() {
+>     return this.firstName + " " + this.lastName;
+>   },
+>   set fullName(value) {
+>     var parts = value.split(" ");
+>     this.firstName = parts[0];
+>     this.lastName = parts[1];
+>   },
+>   get allProperties() {
+>     /* 작성 하시오*/
+>   },
+> };
+> // 출력 :
+> // jaehyun
+> // lim
+> // jaehyun lim
+> ```
