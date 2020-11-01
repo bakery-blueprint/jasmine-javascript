@@ -2,68 +2,84 @@
 
 ## 5.1. [[Prototype]]
 
-- 문과 표현식
-  - 익숙하게. 문장/어구 /구두점,접속사
-  - 적용하여, 문 /표현식/연산자
+- Prototype : 원형. 같거나 비슷한 여러 개가 만들어져 나온 본바탕.
+              Ex) the prototype of the modern bicycle
+              
+- 명세에 따르면 자바스크립트 객체는 [[Prototype]]이라는 내부 프로퍼티가 있고 다른 객체를 참조하는 단순 레퍼런스로 사용한다.
 
 ```javascript
-var a = 3 * 6; 
-var b = a; 
-b;
-// 문 : var a, var b, b
-// 표현식 : 3 * 6, a, b
-// 연산자 : =, *
+var myObject = {
+      a:2
+};
+myObject.a; //2
+myObject; // 직접 해서 보기.
 ```
 
-### 5.1.1 문의 완료 값
-
-- 모든 문은 완료 값을 가진다. 그 값이 undifined라 할지라도.
-- 한 마디로 콘솔은 실행한 문의 완료 값을 보고하며 이 값은 개발자가 내부 프로그램에서 사용할 수 있는 값이 아니다.
-  -> 콘솔의 완료 값을 순간 포착할 방법은 없을까?
-  
 ```javascript
-var a = 42;
-// > undefined.
+var anotherObject = {
+      a:2
+};
+
+var myObject = Object.create(anotherObject);
+myObject.a;
+anotherObject; // 직접 해서 보기.
+myObject; // 직접 해서 보기. 
+```
+- myObject에 a란 프로퍼티가 없으면 다음 관심사는 이 객체의 [[Prototype]] Link이다.
+-[[Prototype]] 링크를 따라가면서 수색 작전을 벌인다.
+
+### 5.1.1 Object.prototype
+
+- [[Prototype]] 연쇄가 끝나는 지점은 정확히 어디인가? 
+  일반 [[Protorype]] 연쇄는 결국 내장 프로토타입 Object.prototype에서 끝난다.
+- JAVA의 최상위 객체 java.lang.Object
+  Javascript는 Object.protorype.
+
+```javascript
+Object.prototype;
+
+Result : 
+constructor: ƒ Object()
+hasOwnProperty: ƒ hasOwnProperty()
+isPrototypeOf: ƒ isPrototypeOf()
+propertyIsEnumerable: ƒ propertyIsEnumerable()
+toLocaleString: ƒ toLocaleString()
+toString: ƒ toString()
+valueOf: ƒ valueOf()
+__defineGetter__: ƒ __defineGetter__()
+__defineSetter__: ƒ __defineSetter__()
+__lookupGetter__: ƒ __lookupGetter__()
+__lookupSetter__: ƒ __lookupSetter__()
+get __proto__: ƒ __proto__()
+set __proto__: ƒ __proto__()
 ```
 
-- 방법 1 : { } 블록은 내부의 가장 마지막 문/표현식의 완료 값을 자신의 완료 값으로 반환한다.
-          하지만, 변수에 결과 값을 담을 수 없다.
+### 5.1.2. 프로퍼티 세팅과 가려짐.
+
+- 하나의 프로퍼티명이 한 객체를 기점으로 [[Prototype]] 연쇄의 상위 수준 두 곳에서 동시에 발견될 때
+  이를 '가려짐(Shadowing)'이라 한다.
+
+> Ex. myObject => anotherObject => Object
+> 1. foo라는 이름의 프로퍼티가 [[Prototype]] 연쇄 상위 수준에 존재하는데, 읽기 전용이 아닐 경우 myObject의 직속 프로퍼티 foo가 추가되어
+>    'Shadowed Property'가 된다.
+> 2. foo라는 이름의 프로퍼티가 [[Prototype]] 연쇄 상위 수준에 존재하는데, 읽기 전용이면 가려짐으로 myObject에 foo가 추가되지 않는다.
+> 3. [[Prototype]] 연쇄 상위 단계에서 발견된 foo가 세터일 경우 세터가 호출되며, 가려짐이 일어나지 않는다.
 
 ```javascript
-var b;
-if(true) {
-    b = 4 + 38;
-}
-// > 42
-```
+var anotherObject = {
+    a: 2
+};
 
-- 방법 2 : eval() 함수 / 참고로, 책에서도 말하지만 쓰레기다.
-          과제. 문제가 되는 사례 및 대체
-          과제이유. 경각심 부각
+var myObject = Object.create(anotherObject);
+anotherObject.a;
+myObject.a;
 
-```javascript
-var a,b;
-a = eval("if(true) { b = 4+38; }");
-a;
-// > 42
-```
+anotherObject.hasOwnProperty("a"); //true
+myObject.hasOwnProperty("a");      //false
 
-- 방법 3 : 'do 표현식' ES7 명세, 실제 사용에 실패하여 코드를 적지 않음.
-
-### 5.1.2. 표현식의 부수 효과
-
-- 부수 : 주된 것이나 기본적인 것에 붙어서 따름. 또는 그러한 것에 붙어 따르게 함. (국어사전)
-- 부수 효과를 지닌 여러가지 표현식 : function, ++, --, = 
-- 개인적으로, 잘 사용한다면 코드를 맛깔나게 줄일 수 있다 정도의 장점밖에 모르겠습니다.
-
-```javascript
-//function
-function foo() {
-    a = a + 1;
-}
-var a = 1;
-foo();
-a;
+myObject.a++;
+myObject.a; //3
+myObject.hasOwnProperty("a");      //true
 ```
 
 ```javascript
@@ -76,117 +92,47 @@ a++;
 ++a;
 ```
 
+## 5.2. 클래스
+
+- [[Prototype]]이 '아닌 것'은?
+- 자바스크립트는 클래스 지향 언어에서 제공하는 클래스라는 추상화된 패턴이나 설계가 없다.
+- Only 객체(Object)만 있을 뿐이다.
+- 자바스크립트에서 객체는 전부 function이다.
+
+### 5.2.1. 클래스 함수
+
+- Foo.prototype; 이 객체를 Foo의 프로토타입이라고 한다.
+- constructor는 Foo function을 가르키고,
+  proto는 상위 링크된 prototype 객체로 링크된다.
+  
 ```javascript
-//=
-var a, b, c;
-a = b = c = 42;
+function Foo() {
+   //...
+}
+Foo.prototype; //{ }
+
+# Result
+{constructor: ƒ}
+  constructor: ƒ Foo()
+  __proto__: Object
 ```
 
-### 5.1.3 콘텍스트 규칙
-
-- Context(문맥) : 같은 표현이라도 문장의 흐름에 따라 뜻이 달라질 수 있다.(국어사전X)
-* Ex) 나는 아직도 배가 고프다.
-- 같은 구문이지만 어디에서 어떤 식으로 사용하느냐에 따라 서로 다른 의미를 가지는 경우가 있다. 
-* Ex) 중괄호
-
-> 중괄호 1 : 객체 리터럴
-
->```javascript
->function bar() {
->    return 10;
->}
->var a = {
->    foo: bar()
->};
->```
-
-> 중괄호 2 : 레이블, P161, 책 내용이 잘 이해되지 않음.
->* 이 { } 코드 블록은 for/while 루프, if 조건 등에 붙어있는 코드 블록과 기능적으로 매우 유사하다.
-
->```javascript
->//foo라는 레이블을 정의.
->foo: for(var i=0; i<4; i++) {
->  for(var j=0; j<4; j++) {
->    if(j == i) {
->      continue foo;
->      //break foo;
->    }
->    
->    if((j*i)%2 == 1) {
->      continue;
->      //break;
->    }
->    console.log(i,j);
->  }
->}
->```
->
->```javascript
->//bar라는 레이블을 정의.
->function foo() {
->  bar: {
->    console.log("a");
->    break bar;
->    console.log("b");
->  }
->  console.log("c");
->}
->
->foo();
->```
-
-> 중괄호 3 : 블록
-
->```javascript
->[] + {}; // "[object Object]", [] " " 강제변환, {} "[object Object]" 강제변환
->{} + []; // 0, {} 빈블록, + [] 0 강제변환
->```
-
-> 중괄호 4: 객체분해, ES6부터 객체 분해 시 { }를 사용한다.
->
->```javascript
->function getData() {
->  return {
->    a: 42,
->    b: "f"
->  };
->}
->var { a, b } = getData();
->console.log(a,b); 
->//42, f
-> /*
-> var res = getData();
-> var a = res.a;
-> var b = res.b;
-> */
->```
-
-> 중괄호 4 : else if와 선택적 블록
-> * if/else if/else --> if/else(if/else)
-> * 단일 블록은 { } 필요가 없지만, 스타일 가이드 문서대로 개발을 진행하는 것이 좋다.
-
-## 5.2. 연산자 우선순위
-
-- &&, || 복습시간.
-- 이러한 연산자에 우선순위가 존재한다.
-- 책에 MDN 웹사이트 연산자 우선순위 참고 
-- https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/%EC%97%B0%EC%82%B0%EC%9E%90_%EC%9A%B0%EC%84%A0%EC%88%9C%EC%9C%84
+- new Foo()로써 만들어진 모든 객체는 결국 'Foo.protorype' 객체와 [[Prototype]] 링크로 연결된다.
 
 ```javascript
-if( str && (matches = str.match( /[aeiou]/g ))){ //... }
-if( str && matches = str.match( /[aeiou]/g )){ //... }
+function Foo() {
+   //...
+}
+var a = new Foo();
+Object.getPrototypeOf(a) === Foo.prototype; // true
 ```
-### 5.2.1. 단락 평가
 
-- 효율적이다. 
- 
-```javascript
-var a;       //falsy
-var b = 1;   //truly
+># 클래스 Vs. 프로토타입
+>- 클래스 : 붕어빵 틀에서 붕어빵을 구워내듯 한 클래스를 다중 복사함. '클래스 작동 계획을 실제 객체로 복사'
+>- 프로토타입 : 복사 과정이 없고 클래스에서 여러 인스턴스를 생성할 수도 없다.
+>            [[Prototype]]으로 연결된 객체를 다수 생성하는 건 가능하지만 기본적으로 어떠한 복사가 없다.
+>            따라서, 자바스크립트 객체는 서로 완전히 떨어져 분리된 것이 아니라 끈끈하게 연결된다.
 
-if(a && b) { }
-if(a || b) { }
-```
 ```javascript
 if( opts && opts.cool ) { }
 //opts 먼저 검사해서 falsy면 한 번만 검사.
