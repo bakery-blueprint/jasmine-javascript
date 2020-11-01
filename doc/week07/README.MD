@@ -3,7 +3,7 @@
 ## 5.1. [[Prototype]]
 
 - Prototype : 원형. 같거나 비슷한 여러 개가 만들어져 나온 본바탕.
-              Ex) the prototype of the modern bicycle
+              Ex) the prototype of the modern bicycle 
               
 - 명세에 따르면 자바스크립트 객체는 [[Prototype]]이라는 내부 프로퍼티가 있고 다른 객체를 참조하는 단순 레퍼런스로 사용한다.
 
