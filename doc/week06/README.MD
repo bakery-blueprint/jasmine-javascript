@@ -374,14 +374,16 @@ Object.getOwnPropertyDescriptors(anotherArray);
 
 ```javascript
 function deepFreeze(targetObj) {
+    
     for (var key in targetObj) {
         for (var key in targetObj) {
             targetObj[key] =
-                value &&
-                typeof value === 'object' &&
-                !Object.isFrozen(targetObj[key])
-                    ? deepFreeze(value)
-                    : value;
+                targetObj[key] &&
+                typeof targetObj[key] === 'object' &&
+                !Object.isFrozen(targetObj[key]) &&
+                window != targetObj[key]
+                    ? deepFreeze(targetObj[key])
+                    : targetObj[key];
         }
 
     return Object.freeze(targetObj);
