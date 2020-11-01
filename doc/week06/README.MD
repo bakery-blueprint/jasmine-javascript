@@ -372,6 +372,22 @@ Object.getOwnPropertyDescriptors(anotherArray);
 
 > # 과제 1. deep freeze 하는 메소드를 작성하시오 (window 객체일 경우에는 freeze 를 패스하는 하는 로직도 추가하시오)
 
+```javascript
+function deepFreeze(targetObj) {
+    for (var key in targetObj) {
+        for (var key in targetObj) {
+            targetObj[key] =
+                value &&
+                typeof value === 'object' &&
+                !Object.isFrozen(targetObj[key])
+                    ? deepFreeze(value)
+                    : value;
+        }
+
+    return Object.freeze(targetObj);
+}
+```
+
 ### 3.6. [[Get]]
 
 -   실제 프로퍼티에 접근할때 [[Get]] 연산을 통해 접근
@@ -471,6 +487,22 @@ myObj.hasOwnProperty('b'); // false
 > // lim
 > // jaehyun lim
 > ```
+
+```javascript
+
+...
+get allProperties() {
+  for(var key in this){
+    console.log(this[key])
+    }
+}
+...
+
+Object.defineProperty(person, 'allProperties', {
+    enumerable: false,
+});
+
+```
 
 # 클래스와 객체의 혼합
 
