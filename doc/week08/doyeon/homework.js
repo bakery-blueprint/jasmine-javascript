@@ -1,15 +1,72 @@
-//과제 1. foo()의 호출부를 바꿔서 함수 호출 순서를 바꿔라 2가지 해보기 (단, foo()와 bar()의 호출은 바꾸면안됨)
-var a = 20;
-function foo(){
-  //A
-  setTimeout(function() {
-    a = a + 1;
-    console.log("foo " + a);
-  }, 100)
+function any(promises) {
+  return new Promise(function (resolve, reject) {
+      var count = promises.length;
+      var result = [];
+      var checkDone = function () {
+          if (1 === result.length) resolve(result);
+      };
+      promises.forEach(function (p, i) {
+          p.then(
+              function (x) {
+                result.push(x);
+              },
+              function (x) {
+              }
+          ).then(checkDone);
+      });
+  });
 }
-function bar(){
-   a = a * 2;
-   console.log("bar " + a);
+
+function last(promises) {
+  return new Promise(function (resolve, reject) {
+      var count = promises.length;
+      var result = [];
+      var checkDone = function () {
+          if (1 === result.length) resolve(result);
+      };
+
+      for (var i = promises.length -1 ; i >= 0; i--) {
+        promises[i].then(
+          function (x) {
+            result.push(x);
+          },
+          function () {
+          }
+        ).then(checkDone);
+      }
+  });
 }
-foo();
-bar();
+
+function resolveDelay(time, value) {
+  return new Promise(function (resolve, reject) {
+      setTimeout(resolve, time, value);
+  });
+}
+
+function rejectDalay(time, value) {
+  return new Promise(function (resolve, reject) {
+      setTimeout(reject, time, value);
+  });
+}
+
+any([rejectDalay(1, 'a'), resolveDelay(200, 'b'), resolveDelay(50, 'c'), rejectDalay(1000, 'd')]).then(
+  function (msg) {
+      console.log('msg');
+      console.log(msg);
+  },
+  function (error) {
+      console.log('error');
+      console.log(error);
+  }
+);
+
+last([rejectDalay(1, 'a'), resolveDelay(200, 'b'), resolveDelay(50, 'c'), rejectDalay(1000, 'd')]).then(
+  function (msg) {
+      console.log('msg');
+      console.log(msg);
+  },
+  function (error) {
+      console.log('error');
+      console.log(error);
+  }
+);
