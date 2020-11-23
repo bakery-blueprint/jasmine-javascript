@@ -120,37 +120,242 @@
 //     }
 // );
 
-function none(promises) {
-    return new Promise(function (resolve, reject) {
-        var count = promises.length;
-        var result = [];
-        var checkDone = function () {
-            if (count === result.length) resolve(result);
-        };
-        promises.forEach(function (p, i) {
-            p.then(
-                function () {},
-                function (x) {
-                    result.push(x);
-                }
-            ).then(checkDone);
-        });
-    });
-}
+// function none(promises) {
+//     return new Promise(function (resolve, reject) {
+//         var count = promises.length;
+//         var result = [];
+//         var checkDone = function () {
+//             if (count === result.length) resolve(result);
+//         };
+//         promises.forEach(function (p, i) {
+//             p.then(
+//                 function () {},
+//                 function (x) {
+//                     result.push(x);
+//                 }
+//             ).then(checkDone);
+//         });
+//     });
+// }
 
-function delay(time, value) {
-    return new Promise(function (resolve, reject) {
-        setTimeout(reject, time, value);
-    });
-}
+// function delay(time, value) {
+//     return new Promise(function (resolve, reject) {
+//         setTimeout(reject, time, value);
+//     });
+// }
 
-none([delay(1, 'a'), delay(200, 'b'), delay(50, 'c'), delay(1000, 'd')]).then(
-    function (msg) {
-        console.log('msg');
-        console.log(msg);
-    },
-    function (error) {
-        console.log('error');
-        console.log(error);
+// none([delay(1, 'a'), delay(200, 'b'), delay(50, 'c'), delay(1000, 'd')]).then(
+//     function (msg) {
+//         console.log('msg');
+//         console.log(msg);
+//     },
+//     function (error) {
+//         console.log('error');
+//         console.log(error);
+//     }
+// );
+
+
+// function any(promises){
+
+// }
+// function none(promises) {
+//     return new Promise(function (resolve, reject) {
+//         var count = promises.length;
+//         var result = [];
+//         var checkDone = function () {
+//             if (count === result.length) resolve(result);
+//         };
+//         promises.forEach(function (p, i) {
+//             p.then(
+//                 function () {},
+//                 function (x) {
+//                     result.push(x);
+//                 }
+//             ).then(checkDone);
+//         });
+//     });
+// }
+
+// function delay(time, value) {
+//     return new Promise(function (resolve, reject) {
+//         setTimeout(reject, time, value);
+//     });
+// }
+
+// none([delay(1, 'a'), delay(200, 'b'), delay(50, 'c'), delay(1000, 'd')]).then(
+//     function (msg) {
+//         console.log('msg');
+//         console.log(msg);
+//     },
+//     function (error) {
+//         console.log('error');
+//         console.log(error);
+//     }
+// );
+
+
+
+
+// function any(promises) {
+//     return new Promise(function(resolve,reject) {
+//         var count = promises.length;
+//         var result = [];
+//         var endCount = 0;
+//         promises.forEach(function(p, i) {
+//             p.then(function(x) {
+//                 endCount++;
+//                 result.push(x)
+//             },function(err){
+//                 endCount++;
+//             })
+//             .finally(function(){
+//                 if (endCount == count && result.length > 0){
+//                     resolve(result);
+//                 }
+//             })
+//         })
+//     })
+// }
+  
+  // delay helper for creating promises that resolve after ms milliseconds
+//   function delay(ms, value) {
+//       if(value == 'a'){
+//         return new Promise(function(pass, fail) {
+//             setTimeout(pass, ms, value)
+//           })
+//       }else{
+//         return new Promise(function(pass, fail) {
+//             setTimeout(fail, ms, value)
+//           })
+//       }
+//   }
+  
+
+//   any([
+//     delay(100, 'a'),
+//     delay(200, 'b'),
+//     delay(50, 'c'),
+//     delay(1000, 'd')
+//   ])
+//   .then(console.log, console.error) // [ a, b, c, d ]
+
+
+
+
+// function last(promises) {
+//     return new Promise(function(resolve,reject) {
+//         var count = promises.length;
+//         var result = [];
+//         var endCount = 0;
+//         var checkDone = function(){
+//             console.log('endCount: ' + endCount + ' , count : ' + count)
+//             if (endCount == count && result.length > 0){
+//                 resolve(result[result.length-1])
+//             }
+//         }
+//         promises
+//         .forEach(function(p, i) {
+//             p.then(function(x){
+//                 endCount++;
+//                 result.push(x)
+//             }, function(err){
+//                 endCount++
+//             })
+//             .then(checkDone)
+//         })
+//     })
+// }
+  
+
+
+// last([
+//     delay(100, 'a'),
+//     delay(200, 'b'),
+//     delay(50, 'c'),
+//     delay(1000, 'd')
+//   ])
+//   .then(console.log, console.error) // [ a, b, c, d ]
+
+
+//   function delay(ms, value) {
+//     return new Promise(function(pass) {
+//       setTimeout(pass, ms, value)
+//     })
+//   }
+
+
+// var x = 1;
+
+// function *foo(){
+//     x++;
+//     yield;
+//     console.log(x);
+// }
+
+// function bar(){
+//     x++;
+// }
+
+
+// var it = foo();
+
+// console.log(it.next());
+// console.log(x)
+// bar();
+// it.next();
+
+function step(gen){
+    var it = gen();
+    var last;
+
+    return function(){
+        console.log('last : ', last, ', a : ' + a, ', b : ' , b)
+        last = it.next(last).value;
+        console.log('last : ', last, ', a : ' + a, ', b : ' , b)
     }
-);
+}
+
+var a = 1;
+var b = 2;
+
+function *foo(){
+    a++;
+    yield;
+    b = b * a;
+    a = (yield b) + 3;
+}
+
+function *bar(){
+    b--; 
+    yield;
+    a = (yield 8) + b;
+    b = a * (yield 2);
+}
+
+var s1 = step(foo);
+var s2 = step(bar)
+
+console.log('S2')
+s2()
+console.log(a, b)
+console.log('S2')
+s2()
+console.log(a, b)
+console.log('S1')
+s1()
+console.log(a, b)
+console.log('S2')
+s2()
+console.log(a, b)
+console.log('S1')
+s1()
+console.log(a, b)
+console.log('S1')
+s1()
+console.log(a, b)
+console.log('S2')
+s2()
+console.log(a, b)
+
+
