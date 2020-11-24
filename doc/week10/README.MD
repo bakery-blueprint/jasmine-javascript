@@ -545,3 +545,424 @@ function *foo() {
   console.log(r3)
 }
 ```
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+## 4.5. 제너레이터 위임
+- 제네레이터 없이 일반 함수를 이용할 경우 제네레이터 처럼 yield에서 멈출수 없는게 단점
+- run()를 통해서 run() 인스턴스를 통해 다른 run()에서 나온 프라미스를 yield해서 내보내면
+다른 함수가 끝날떄 까지 멈추게 할 방법!
+- run()보다 더 좋은 방법이 없을까?
+
+```javascript
+function *foo() {
+  var r2 = request("http://2/");
+  var r3 = request("http://3/");
+
+  return r3;
+}
+
+function *bar(ur1,ur2) {
+  var r1 = request("http://1/");
+
+  //'run()' 를 통해 '*foo()'에 "위임한다".
+  var r3 = yield run(foo);
+
+  console.log(r3);
+}
+
+run(bar);
+```
+
+```javascript
+function *foo(){
+  console.log("*foo() 시작");
+  yield 3;
+  yield 4;
+  console.log("*foo() 끝");
+}
+
+function *bar(){
+  yield 1;
+  yield 2;
+  yield *foo(); //yield - 위임
+  yield 5;
+
+}
+
+var it = bar();
+it.next().value; //1
+it.next().value; //2
+it.next().value; //*foo() 시작
+                 //3
+it.next().value; //4
+it.next().value; //*foo() 끝
+                 //5
+```
+
+```javascript
+function *foo() {
+  var r2 = yield request("http://2/");
+  var r3 = yield request("http://3/");
+
+  return r3;
+}
+
+function *bar(ur1,ur2) {
+  var r1 = yield request("http://1/");
+
+  //'yield*' 를 통해 '*foo()'에 "위임한다".
+  var r3 = yield *foo;
+
+  console.log(r3);
+}
+
+run(bar);
+```
+
+### 4.5.1 왜 위임을?
+- 주로 코드를 조직화하고 그렇게 해서 일반 함수 호출과 맞추기 위함
+- 별개의 함수로 나눠서 함수 단위로 프로그램을 호출하는 편이 더 낫기 떄문
+- 제네레이터도 마찬가지로 분리 배치함으로써 가독성, 유지보수성, 디버깅 측면에서 유리
+
+### 4.5.2. 메시지 위임
+- 이터레이터뿐 아니라 양방향 메시징에서도 쓰임
+- 제네레이터가 아닌 일반 '이터러블'에도 쓸수 있음
+- 예외도 마찬가지로 위임이됨 
+```javascript
+
+function *foo(){
+
+}
+function *bar(){
+  console.log("*foo() 내부", yield "B");
+  console.log("*foo() 내부", yield "C");
+  return "D";
+}
+function *bar(){
+  console.log("*foo() 내부", yield "A");
+  //yield 위임
+  console.log("*foo() 내부", yield *foo());
+  console.log("*foo() 내부", yield "E");
+  return "F";
+}
+
+var it = bar();
+console.log("외부:", it.next().value);
+//외부 : A
+console.log("외부:", it.next(1).value);
+//*bar() 내부 : 1
+//외부 : B
+console.log("외부:", it.next(2).value);
+//*foo() 내부 : 2
+//외부 : C
+console.log("외부:", it.next(3).value);
+//*foo() 내부 : 3
+//*bar() 내부 : D
+//외부 : E
+console.log("외부:", it.next(4).value);
+//*bar() 내부 : 4
+//외부 : F
+```
+
+```javascript
+function *bar(){
+  console.log("*foo() 내부", yield "A");
+  //yield 위임
+  console.log("*foo() 내부", yield *["B","C","D"]);
+
+  console.log("*foo() 내부", yield "E");
+  return "F";
+}
+
+var it = bar();
+console.log("외부:", it.next().value);
+//외부 : A
+console.log("외부:", it.next(1).value);
+//*bar() 내부 : 1
+//외부 : B
+console.log("외부:", it.next(2).value);
+//외부 : C
+console.log("외부:", it.next(3).value);
+//외부 : D
+console.log("외부:", it.next(4).value);
+//*bar() 내부 : undefined
+//외부 : E
+console.log("외부:", it.next(4).value);
+//*bar() 내부 : 5
+//외부 : F
+```
+
+### 4.5.3. 비동기성을 위임
+- 앞에서 예제로 위임 표현
+
+### 4.5.4 위임 '재귀'
+- 본인 스스로(즉 재귀) 호츨하는 경우도 위임이 가능함
+
+
+## 4.6 제네레이터 동시성
+- 동시 실행 중인 두 "프로세스"를 협동적으로 각자의 작업을 인터리빙 할 수 있고 많은 경우에서도
+비동기 표현식으로 구사할 수 있음
+
+```javascript
+function response(data){
+  if(data.url == "http://1//"){
+    res[0] = data;
+  }
+  else if(data.url == "http://2/"){
+    res[1] = data;
+  }
+}
+```
+```javascript
+var res = [];
+
+function *reqData(url){
+  res.push(yield request(url));
+}
+
+var it1 =reqData("http://1//");
+var it2 =reqData("http://2//");
+
+var p1 = it1.next();
+var p2 = it2.next();
+
+p1.then(function(data){
+  it1.next(data);
+  return p2;
+})
+.then(function(data){
+  it2.next(data);
+});
+```
+- 제네레이터 자제를 조정을 한게 아니라서 다른방법으로 해보자!
+
+```javascript
+var res = [];
+
+function *reqData(url){
+  var data = yield request(url);
+
+  //제어권 넘김
+  yield;
+
+  res.push(data);
+}
+
+var it1 =reqData("http://1//");
+var it2 =reqData("http://2//");
+
+var p1 = it1.next();
+var p2 = it2.next();
+
+p1.then(function(data){
+  it1.next(data);
+});
+
+p2.then(function(data){
+  it2.next(data);
+});
+
+Promise.all([p1,p2).
+then(function(){
+  it1.next();
+  it2.next();
+})
+```
+
+```javascript
+var res = [];
+
+runAll(
+  function*(){
+      var p1 = yield request("http://1//");
+
+      //제어권 넘김
+      yield;
+
+      res.push(yield p1);
+  },
+  function*(){
+      var p2 = yield request("http://2//");
+
+      //제어권 넘김
+      yield;
+
+      res.push(yield p2);
+  }
+)
+```
+- 첫번째 제터레이터는 첫번쨰 url에서 첫번쨰 ajax 응답 프라미스를 얻고 다시 runAll() 유틸리티로 제어권을 넘김
+- 두번째 제터레이터 역시 마찬가지로 두번째 url에서 ajax 응답 프라미스를 얻고 runAll() 유틸리티로 제어권을 넘김
+- res라는 외부 변수를 두고 두 ajax 의 용기로 사용
+- res를 내부 변수 공간에 둘수 없을까?
+
+```javascript
+
+
+runAll(
+  function*(data){
+      data.res = [];
+      var url1 = request("http://1//");
+      var p1 = request(url1)
+      //제어권 넘김
+      yield;
+
+      data.res.push(yield p1);
+  },
+  function*(data){
+      data.res = [];
+      var url2 = request("http://2//");
+      var p2 = request(url2)
+      //제어권 넘김
+      yield;
+
+      data.res.push(yield p2);
+  }
+)
+
+```
+- 제네레이터 위임은 메시지도 위임 가능
+- url1, url2 두값을 교류하면서 실질적인 통신을 서로 함
+
+## 4.7. 썽크
+> 썽크  : 다른 함수를 호출할 운명을 가진 인자가 없는 함수
+```javascript
+//동기적 썽크
+function foo(x,y){
+  return x + y;
+}
+function fooThunk(){
+  return foo(3,4);
+}
+// 나중에
+console.log(fooThunk());
+```
+
+```javascript
+//비동기적 썽크
+function foo(x,y,cb){
+  setTimeout(function(){
+      (x+y);
+  },1000);
+}
+function fooThunk(){
+  return foo(3,4,cb);
+}
+// 나중에
+fooThunk(function(sum){
+  console.log(sum);//7  
+})
+;
+```
+```javascript
+function thunkify(fn){
+  var args = [].slice.call(arguments,1);
+  return function(cb){
+      args(cb);
+      return fn.apply(null,args);
+  };
+}
+
+var fooThunk = thunkify(foo,3,4);
+
+//나중에
+fooThunk(function(sum){
+  console.log(sum); //7
+})
+```
+- 일일이 수동으로 썽크를 만들수 없으니 포장업무를 대행할 유틸리지 작성
+- but, 자바스크립트에서 썽크를 이용하는 표준적인 방법은 아님
+  - thunkify()로 썽크 자신을 생성하기보다는 썽크를 만드는 함수(팩토리)를 생성
+
+
+```javascript
+function thunkify(fn){
+  return function(){
+        var args = [].slice.call(arguments);
+        return function(cb){
+            args.push(cb);
+            return fn.apply(null,args);
+        }         
+  }
+}
+
+var whtIsThis = thunkify(foo); //썽크를 만드는 팩토리(썽커리?)
+var fooThunk = whatIsThis(3,4);
+fooThunk(function(sum){
+  console.log(sum);//7
+})
+```
+```javascript
+var foothunkory = thunkify(foo);
+var fooThunk1 = fooThunkory(3,4);
+var fooThunk2 = fooThunkory(5,6);
+
+// --------------비교
+var fooThunk11 = fooThunkory(foo,3,4);
+var fooThunk22 = fooThunkory(foo,5,6);
+
+//나중에
+fooThunk1(function(sum){
+  console.log(sum);//7
+});
+fooThunk2(function(sum){
+  console.log(sum);//11
+});
+
+fooThunk11(function(sum){
+  console.log(sum);//7
+});
+fooThunk22(function(sum){
+  console.log(sum);//11
+});
+```
+
+### 4.7.1 s/promise/thunk
+> 썽크와 제너레이터 상관관계
+- 어떤 값을 요청하여 비동기적으로 응답을 받는다는점은 같다
+ex) promisify(), thunkify()
+- 제너레이터는 비동기성 프라미스 대신 비동기성 썽크를 yield해도된다.
+```javascript
+function *foo(){
+  var val = yield request("http://111/");
+  console.log(val);
+}
+run(foo);
+```
+
+```javascript
+//프라미서리
+var request = Promise.wrap(ajax);
+
+//썽커리
+var request = thunkify(ajax);
+```
+> 하지만, 제너레이터를 진행할 미래값을 나타내는 프라미스, 썽크관점에서만 대칭적으로 비슷하고 사용할수 있음
+- 썽크 자체는 프라미스의 믿음성/조합성을 보장하지 못함
+- 썽크는 특정한 제너레이터의 비동기 패턴에서 프라미스 대용으로 쓰일수 있음
+- 결론 : 프라미스를 이용하자!
+
+## 4.8 ES6 이전 제너레이터
+- EX6에 나온 제너레이터를 이전 버전에서는 사용할수 없을까?
+  - 트렌스파일러 도구 이용
+
+### 4.8.1. 수동변환
+- 제너레이터를 수동으로 트랜스 파일 하는 방법
+```javascript
+  function *foo(url){
+    try{
+      console.log("요청 중:",url);
+      var val = yield request(url);
+      console.log(val);
+    }catch(err){
+      console.log("에러:",err);
+      return false;
+    }
+  }
+  var it = foo("http://111");
+```
+
+### 4.8.2. 자동변환
+- 페이스북 개발자들이 만든 : 리제너레이터
+https://facebook.github.io/regenerator/
